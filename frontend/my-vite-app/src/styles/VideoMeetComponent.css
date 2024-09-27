@@ -1,0 +1,140 @@
+.meetVideoContainer {
+  position: relative;
+  height: 100vh;
+}
+
+.meetUserVideo {
+  position: absolute;
+  bottom:10vh;
+  height: 20vh;
+  width: auto;
+  left: 0;
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.buttonContainer{
+    position: absolute;
+    width: 100vw;
+    bottom: 0;
+    text-align: center;
+}
+
+.buttonContainer svg{
+    font-size: 3rem;
+}
+
+/* Container for the conference view */
+.conferenceView {
+  display: flex; /* Use flexbox for layout */
+  padding: 10px;
+  flex-wrap: wrap; /* Allow wrapping of video elements */
+  gap: 16px; /* Space between video containers */
+  opacity: 0; /* Start invisible for fade-in effect */
+  animation: fadeIn 1s forwards; /* Fade-in animation */
+}
+
+/* Animation for fade-in effect */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Style for each video container */
+.conferenceView > div {
+  flex: 1 1 300px; /* Allow each video to grow and shrink, minimum width of 300px */
+  max-width: 400px; /* Maximum width for video containers */
+  
+  border-radius: 8px; /* Rounded corners */
+  overflow: hidden; /* Clip the overflow */
+  transition: transform 0.3s, box-shadow 0.3s; /* Transition for hover effects */
+}
+
+/* Style for videos */
+video {
+  width: 100%; /* Make videos fill the container */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Rounded corners for videos */
+}
+
+/* Hover effect on video container */
+.conferenceView > div:hover {
+  transform: scale(1.05); /* Slightly enlarge the video container */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Add shadow for depth effect */
+}
+
+/* Style for "No videos connected" message */
+p {
+  color: white; /* Text color */
+  font-size: 1.2em; /* Font size */
+  text-align: center; /* Center align */
+  width: 100%; /* Full width */
+}
+
+
+.chatRoom{
+  position: absolute;
+  height: 90vh;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 25vw;
+  padding-inline: 20px;
+}
+
+.chatContainer{
+  position: relative;
+  height: 100%;
+}
+
+.chattingArea{
+  position: absolute;
+  bottom: 0;
+  margin: 10px;
+  width: 100%;
+}
+
+.chattingDisplay {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  max-height: 80%;
+  overflow-y: auto; /* Scrolls if messages overflow */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chattingDisplay .messageItem {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px;
+  margin: 5px 0;
+  text-align: left; /* Ensure all content is left-aligned */
+  display: block; /* Each message occupies its own block */
+}
+
+.chattingDisplay .messageItem p {
+  margin: 0;
+  color: #333;
+}
+
+.messageSender {
+  font-weight: bold;
+  margin-bottom: 4px; /* Space between sender name and message */
+  color: #007bff; /* Color for sender name */
+}
+
+.messageData {
+  color: #555;
+}
+
+.chattingDisplay::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Edge */
+}
+/* Optional: Add padding or margin to the overall chat box for better spacing */
+

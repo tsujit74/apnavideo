@@ -12,8 +12,9 @@ import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
 import ChatIcon from "@mui/icons-material/Chat";
 import { json, useNavigate } from "react-router-dom";
+import server from "../environment";
 
-const server_url = "http://localhost:5500";
+const server_url = server;
 
 let connections = {};
 

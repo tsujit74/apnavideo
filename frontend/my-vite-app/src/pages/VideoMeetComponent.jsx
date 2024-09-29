@@ -514,7 +514,7 @@ export default function VideoMeetComponent() {
         </div>
         
         <div className="right-side">
-          <video ref={localVideoRef} autoPlay muted></video>
+          <video ref={localVideoRef} autoPlay muted={false}></video>
         </div>
       </div>
       
@@ -611,7 +611,7 @@ export default function VideoMeetComponent() {
             className="meetUserVideo"
             ref={localVideoRef}
             autoPlay
-            muted
+            muted={false}
           ></video>
           <div className="conferenceView">
             {videos.length > 0 ? (
@@ -636,7 +636,7 @@ export default function VideoMeetComponent() {
                       }
                     }}
                     autoPlay
-                    muted
+                    muted={false}
                   ></video>
                 </div>
               ))

@@ -62,29 +62,25 @@ export default function VideoMeetComponent() {
   const getPermissions = async () => {
     try {
       // Request video permission
-      const videoPermission = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      setVideoAvailable(true);
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      setVideoAvailable(true); // Set video availability to true
     } catch (err) {
       console.error("Video permission denied:", err);
-      setVideoAvailable(false);
+      setVideoAvailable(false); // Set video availability to false
     }
-
+  
     try {
       // Request audio permission
-      const audioPermission = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-      setAudioAvailable(true);
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setAudioAvailable(true); // Set audio availability to true
     } catch (err) {
       console.error("Audio permission denied:", err);
-      setAudioAvailable(false);
+      setAudioAvailable(false); // Set audio availability to false
     }
-
+  
     // Check for screen sharing availability
     setScreenAvailable(!!navigator.mediaDevices.getDisplayMedia);
-
+  
     // If either video or audio is available, get the user media stream
     if (videoAvailable || audioAvailable) {
       try {
@@ -92,17 +88,29 @@ export default function VideoMeetComponent() {
           video: videoAvailable,
           audio: audioAvailable,
         });
-
+  
         window.localStream = userMediaStream;
+  
+        // Set local video element source to the user media stream
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = userMediaStream;
+        }
+  
+        // Optional: Check if audio tracks are available in the stream
+        const audioTracks = userMediaStream.getAudioTracks();
+        if (audioTracks.length > 0) {
+          console.log("Audio track is available:", audioTracks[0].label);
+        } else {
+          console.warn("No audio track found in the stream.");
         }
       } catch (err) {
         console.error("Failed to get user media stream:", err);
       }
+    } else {
+      console.warn("No video or audio permissions available.");
     }
   };
-
+  
   useEffect(() => {
     getPermissions();
   }, []);

@@ -5,10 +5,21 @@ import "../App.css";
 import { Button, IconButton, TextField } from "@mui/material";
 import RestoreIcon from "@mui/icons-material/Restore";
 import { AuthContext } from "../contexts/AuthContext";
+import { useUser } from '../contexts/UserContext';
+import { useEffect } from "react";
 
 function HomeComponent() {
   let navigate = useNavigate();
   const [meetingCode, setMeetingCode] = useState("");
+
+  const {user,setUser} = useUser();
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            setUser(storedUsername);
+        }
+    }, []);
 
   const { addToUserHistory } = useContext(AuthContext);
   let handleJoinVideoCall = async () => {
@@ -18,25 +29,22 @@ function HomeComponent() {
 
   return (
     <>
-      <div className="landingPageContainer">
-        <div className="navBar">
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <h2 className="navLogo">Apna Video</h2>
-          </div>
-
+      <div className="landingPageContainer details">
+        <div className="detailsUserPage">
           <div style={{ display: "flex", alignItems: "center" }}>
             <IconButton
               onClick={() => {
                 navigate("/history");
               }}
             >
-              <RestoreIcon />
+              <RestoreIcon sx={{ml:2,mr:2}} />
             </IconButton>
-            <p>History</p>
 
             <Button
               onClick={() => {
                 localStorage.removeItem("token");
+                localStorage.removeItem('username');
+                setUser(null);
                 navigate("/auth");
               }}
             >

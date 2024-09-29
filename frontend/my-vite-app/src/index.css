@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html,body{
+  height: 100%;
+  margin: 0;
+}
+
 
 
 
@@ -18,7 +23,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  background-color: gray;
+  /* background-color: #f5f5f5; */
 
   /* color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -29,15 +34,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-/*
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
 
+
+/*
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

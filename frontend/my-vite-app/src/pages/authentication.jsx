@@ -16,7 +16,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthContext } from '../contexts/AuthContext';
 import { Snackbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
+import { useUser } from '../contexts/UserContext';
 import httpStatus from "http-status";
+import '../App.css'
+import NavComponent from "./navComponent";
 
 
 
@@ -35,16 +38,22 @@ export default function Authentication() {
 
     const { handleRegister, handleLogin } = React.useContext(AuthContext);
     const navigate = useNavigate();
+    
+    const {setUser} = useUser();
 
     const handleAuth = async () => {
         try {
             if (formState === 0) {
                 // Login action
                 let result = await handleLogin(username, password);
+                setUsername(result)
+                localStorage.setItem("username", username); 
+                setUser(username);
                 setMessage("Login successful");
                 setOpen(true);
                 setError("");
                 // Navigate to homepage after successful login
+                console.log(result," authentication")
                 navigate("/home");
             }
             if (formState === 1) {
@@ -65,102 +74,108 @@ export default function Authentication() {
         }
     };
 
+    const defaultTheme = createTheme({
+        palette: {
+          primary: {
+            main: "#3f51b5", // Example primary color
+          },
+          secondary: {
+            main: "#f50057", // Example secondary color
+          },
+          background: {
+            default: "#fff", // Custom background color
+          },
+        },
+      });
+
     return (
+        <>
+        <div className="authentication">
+          <p>{username}</p>
         <ThemeProvider theme={defaultTheme}>
-            <Grid container component="main" sx={{ height: "100vh" }}>
-                <CssBaseline />
-                <Grid
-                    item
-                    xs={false}
-                    sm={4}
-                    md={7}
-                    sx={{
-                        backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
-                        backgroundRepeat: "no-repeat",
-                        backgroundColor: (t) =>
-                            t.palette.mode === "light" ? t.palette.grey[50] : t.palette.grey[900],
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                    }}
-                />
-                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                    <Box
-                        sx={{
-                            my: 8,
-                            mx: 4,
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
+  <Grid container component="main" sx={{ justifyContent: "center", alignItems: "flex-start", bgcolor: "#fff", mt: 1 }}>
+    <CssBaseline />
+    <Grid item xs={12} sm={8} md={5} component={Paper} square sx={{ boxShadow: "none", mt: 2, bgcolor:"#fff" }}>
+      <Box
+        sx={{
+          my: 8,
+          mx: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
 
-                        <div>
-                            <Button variant={formState === 0 ? "contained" : ""} onClick={() => setFormState(0)}>
-                                Sign In
-                            </Button>
-                            <Button variant={formState === 1 ? "contained" : ""} onClick={() => setFormState(1)}>
-                                Sign Up
-                            </Button>
-                        </div>
+        <div>
+          <Button variant={formState === 0 ? "contained" : ""} onClick={() => setFormState(0)}>
+            Sign In
+          </Button>
+          <Button variant={formState === 1 ? "contained" : ""} onClick={() => setFormState(1)}>
+            Sign Up
+          </Button>
+        </div>
 
-                        <Box component="form" noValidate sx={{ mt: 1 }}>
-                            {formState === 1 && (
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="name"
-                                    label="Full Name"
-                                    name="name"
-                                    value={name}
-                                    autoFocus
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                            )}
+        <Box component="form" noValidate sx={{ mt: 1, }}>
+          {formState === 1 && (
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+              label="Full Name"
+              name="name"
+              value={name}
+              autoFocus
+              onChange={(e) => setName(e.target.value)}
+            />
+          )}
 
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                name="username"
-                                value={username}
-                                autoFocus
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                value={password}
-                                type="password"
-                                onChange={(e) => setPassword(e.target.value)}
-                                id="password"
-                            />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            value={username}
+            autoFocus
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            value={password}
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            id="password"
+          />
 
-                            <p style={{ color: "red" }}>{error}</p>
+          <p style={{ color: "red" }}>{error}</p>
 
-                            <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                                onClick={handleAuth}
-                            >
-                                {formState === 0 ? "Login " : "Register"}
-                            </Button>
-                        </Box>
-                    </Box>
-                </Grid>
-            </Grid>
+          <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleAuth}
+          >
+            {formState === 0 ? "Login" : "Register"}
+          </Button>
+        </Box>
+      </Box>
+    </Grid>
+  </Grid>
 
-            <Snackbar open={open} autoHideDuration={4000} message={message} />
-        </ThemeProvider>
+  <Snackbar open={open} autoHideDuration={4000} message={message} />
+</ThemeProvider>
+
+        </div>
+        </>
     );
 }

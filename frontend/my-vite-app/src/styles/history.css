@@ -1,0 +1,5 @@
+.historyPage{
+    color: black;
+    height: 80vh;
+    overflow-y: auto;
+}

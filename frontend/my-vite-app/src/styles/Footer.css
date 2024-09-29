@@ -1,0 +1,93 @@
+/* Ensure the footer sticks to the bottom */
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+  
+  .App {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the App takes full height */
+  }
+  
+  .footer {
+    background-color: #f5f5f5;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto; /* Pushes the footer to the bottom */
+    width: 100%;
+    bottom: 0;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .footer-description {
+    margin: 0;
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: black;
+  }
+  
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .footer-links li {
+    margin: 0 15px;
+  }
+  
+  .footer-links a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+  }
+  
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-copyright {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: black;
+  }
+
+  @media (max-width: 768px) {
+    .footer {
+      padding: 15px 0;
+    }
+  
+    .footer-description {
+      font-size: 12px; /* Adjust font size for mobile */
+    }
+  
+    .footer-links {
+      flex-direction: column; /* Stack links vertically */
+    }
+  
+    .footer-links li {
+      margin: 5px 0; /* Add spacing between stacked links */
+    }
+  
+    .social-media {
+      display: flex;
+      flex-direction: column; /* Stack social media links vertically */
+    }
+  
+    .social-media a {
+      margin: 5px 0; /* Add spacing between social media links */
+    }
+  
+    .footer-copyright {
+      font-size: 10px; /* Smaller font size for mobile */
+    }
+  }
+  

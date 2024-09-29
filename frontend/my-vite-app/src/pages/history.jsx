@@ -8,6 +8,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import HomeIcon from "@mui/icons-material/Home";
+import "../styles/history.css"
 
 import { IconButton } from "@mui/material";
 export default function History() {
@@ -46,14 +47,14 @@ export default function History() {
 
 
   return (
-    <div className="landingPageContainer">
+    <div className="historyPage">
       <IconButton
       style={{color:'white'}}
         onClick={() => {
           routeTo("/home");
         }}
       >
-        <HomeIcon />
+        <HomeIcon sx={{color:'black'}}/>
       </IconButton>
       {meetings.length !== 0 ? (
         meetings.map((e, i) => {

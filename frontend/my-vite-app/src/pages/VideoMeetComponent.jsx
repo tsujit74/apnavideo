@@ -49,6 +49,7 @@ export default function VideoMeetComponent() {
   let [askForUsername, setAskForUsername] = useState(true);
 
   let [username, setUsername] = useState("");
+  const [participants, setParticipants] = useState([]);
 
   const videoRef = useRef([]);
 
@@ -61,29 +62,25 @@ export default function VideoMeetComponent() {
   const getPermissions = async () => {
     try {
       // Request video permission
-      const videoPermission = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      setVideoAvailable(true);
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      setVideoAvailable(true); // Set video availability to true
     } catch (err) {
       console.error("Video permission denied:", err);
-      setVideoAvailable(false);
+      setVideoAvailable(false); // Set video availability to false
     }
-
+  
     try {
       // Request audio permission
-      const audioPermission = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-      setAudioAvailable(true);
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setAudioAvailable(true); // Set audio availability to true
     } catch (err) {
       console.error("Audio permission denied:", err);
-      setAudioAvailable(false);
+      setAudioAvailable(false); // Set audio availability to false
     }
-
+  
     // Check for screen sharing availability
     setScreenAvailable(!!navigator.mediaDevices.getDisplayMedia);
-
+  
     // If either video or audio is available, get the user media stream
     if (videoAvailable || audioAvailable) {
       try {
@@ -91,20 +88,33 @@ export default function VideoMeetComponent() {
           video: videoAvailable,
           audio: audioAvailable,
         });
-
+  
         window.localStream = userMediaStream;
+  
+        // Set local video element source to the user media stream
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = userMediaStream;
+        }
+  
+        // Optional: Check if audio tracks are available in the stream
+        const audioTracks = userMediaStream.getAudioTracks();
+        if (audioTracks.length > 0) {
+          console.log("Audio track is available:", audioTracks[0].label);
+        } else {
+          console.warn("No audio track found in the stream.");
         }
       } catch (err) {
         console.error("Failed to get user media stream:", err);
       }
+    } else {
+      console.warn("No video or audio permissions available.");
     }
   };
-
+  
   useEffect(() => {
     getPermissions();
   }, []);
+  
 
   let getUserMediaSucess = (stream) => {
     try {
@@ -386,8 +396,13 @@ export default function VideoMeetComponent() {
   };
 
   let connect = () => {
-    setAskForUsername(false);
-    getMedia();
+    if (participants.length <= 2) {
+      setParticipants((prev) => [...prev, username]);
+      setAskForUsername(false);
+      getMedia();
+    } else {
+      alert("meeting is Full you not allowed!");
+    }
   };
 
   let handleVideo = () => {
@@ -475,37 +490,52 @@ export default function VideoMeetComponent() {
     setMessage("");
   };
 
-  let handleEndCall = () =>{
+  let handleEndCall = () => {
     try {
       let tracks = localVideoRef.current.srcObject.getTracks();
-      tracks.forEach(track=>track.stop())
+      tracks.forEach((track) => track.stop());
     } catch (error) {
       console.log(e);
     }
     routeTo("/home");
-  }
+  };
 
   return (
-    <div>
+    <div className="videoMeetPage landingPageContainer">
       {askForUsername === true ? (
-        <div>
-          <h2>Enter into Lobby</h2>
-          <TextField
-            id="outlined-basic"
-            label="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <Button variant="contained" onClick={connect}>
-            Connect
-          </Button>
+        <div className="lobby-container">
+          <div className="left-side">
+            <h2>Enter into Lobby</h2>
+            <TextField
+              id="outlined-basic"
+              label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              sx={{ mt: 1 }}
+              fullWidth
+            />
+            <Button variant="contained" onClick={connect} sx={{ mt: 2 }}>
+              Connect
+            </Button>
+          </div>
 
-          <div style={{width:"50%",margin:'0 auto'}}>
+          <div className="right-side">
             <video ref={localVideoRef} autoPlay muted></video>
           </div>
         </div>
       ) : (
         <div className="meetVideoContainer">
+          {/* <h3>Participants:</h3>
+          <ul>
+            {participants.length > 0 ? (
+              participants.map((participant, index) => (
+                <li key={index}>{participant}</li>
+              ))
+            ) : (
+              <p>No participants yet</p>
+            )}
+          </ul> */}
+
           {showModel ? (
             <div className="chatRoom">
               <div className="chatContainer">
@@ -534,7 +564,7 @@ export default function VideoMeetComponent() {
                       </div>
                     ))
                   ) : (
-                    <p style={{color:"black"}}>No messages available</p>
+                    <p style={{ color: "black" }}>No messages available</p>
                   )}
                 </div>
                 <div className="chattingArea">
@@ -561,18 +591,18 @@ export default function VideoMeetComponent() {
           )}
 
           <div className="buttonContainer">
-            <IconButton onClick={handleVideo} style={{ color: "white" }}>
+            <IconButton onClick={handleVideo} style={{ color: "black" }}>
               {video === true ? <VideocamIcon /> : <VideocamOffIcon />}
             </IconButton>
             <IconButton onClick={handleEndCall} style={{ color: "red" }}>
               <CallEndIcon />
             </IconButton>
-            <IconButton onClick={handleAudio} style={{ color: "white" }}>
+            <IconButton onClick={handleAudio} style={{ color: "black" }}>
               {audio === true ? <MicIcon /> : <MicOffIcon />}
             </IconButton>
 
             {screenAvailable === true ? (
-              <IconButton onClick={handleScreen} style={{ color: "white" }}>
+              <IconButton onClick={handleScreen} style={{ color: "black" }}>
                 {screen === true ? (
                   <ScreenShareIcon />
                 ) : (
@@ -586,7 +616,7 @@ export default function VideoMeetComponent() {
             <Badge badgeContent={newMessages} max={99} color="primary">
               <IconButton
                 onClick={() => setShowModel(!showModel)}
-                style={{ color: "white" }}
+                style={{ color: "black" }}
               >
                 <ChatIcon />
               </IconButton>
@@ -600,23 +630,24 @@ export default function VideoMeetComponent() {
             muted
           ></video>
           <div className="conferenceView">
-            {videos.length > 0 ? (
+            {/* {participants.length ===2 ? } */}
+            {participants.map((participant, index) =>
               videos.map((video) => (
                 <div key={video.socketId}>
                   {/* <h2 style={{ color: "red" }}>{video.socketId}</h2> */}
                   <video
-                    data-socket={video.socketId}
+                    data-socket={participant}
                     ref={(ref) => {
                       if (ref) {
                         if (video.stream) {
                           console.log(
-                            `Setting stream for: ${video.socketId}`,
+                            `Setting stream for: ${participant}`,
                             video.stream
                           );
                           ref.srcObject = video.stream; // Set the video stream
                         } else {
                           console.log(
-                            `No stream available for: ${video.socketId}`
+                            `No stream available for: ${participant}`
                           );
                         }
                       }
@@ -624,10 +655,11 @@ export default function VideoMeetComponent() {
                     autoPlay
                     muted
                   ></video>
+                  {/* <p>{participant}</p> */}
                 </div>
               ))
-            ) : (
-              <p>No videos connected</p>
+              // ) : (
+              //   <p>No videos connected</p>
             )}
           </div>
         </div>

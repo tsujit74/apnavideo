@@ -1,9 +1,10 @@
 import { Server } from "socket.io"
 
 
-let connections = {}
-let messages = {}
-let timeOnline = {}
+let connections = {};
+let messages = {};
+let timeOnline = {};
+let usernames = {};
 
 export const connectToSocket = (server) => {
     const io = new Server(server, {
@@ -18,13 +19,19 @@ export const connectToSocket = (server) => {
 
     io.on("connection", (socket) => {
 
-        console.log("SOMETHING CONNECTED")
+        console.log("User connected:", socket.id);
 
-        socket.on("join-call", (path) => {
-
+        socket.on("join-call", (path,username) => {
+            if (!username) {
+                console.error(`Username is missing for socket: ${socket.id}`);
+                return;
+            }
+            usernames[socket.id] = username;
+            console.log(`${username} joined the call`);
             if (connections[path] === undefined) {
                 connections[path] = []
             }
+            
             connections[path].push(socket.id)
 
             timeOnline[socket.id] = new Date();
@@ -34,7 +41,7 @@ export const connectToSocket = (server) => {
             // })
 
             for (let a = 0; a < connections[path].length; a++) {
-                io.to(connections[path][a]).emit("user-joined", socket.id, connections[path])
+                io.to(connections[path][a]).emit("user-joined", socket.id, connections[path],username)
             }
 
             if (messages[path] !== undefined) {
@@ -77,42 +84,100 @@ export const connectToSocket = (server) => {
                 })
             }
 
-        })
+        });
 
-        socket.on("disconnect", () => {
+        socket.on("end-call", (path) => {
+            // Notify all users that the call has ended
+            connections[path].forEach((userSocketId) => {
+              io.to(userSocketId).emit("call-ended");
+            });
+      
+            // Clean up connections and messages for the room
+            delete connections[path];
+            delete messages[path];
+          });
 
-            var diffTime = Math.abs(timeOnline[socket.id] - new Date())
-
-            var key
-
-            for (const [k, v] of JSON.parse(JSON.stringify(Object.entries(connections)))) {
-
-                for (let a = 0; a < v.length; ++a) {
-                    if (v[a] === socket.id) {
-                        key = k
-
-                        for (let a = 0; a < connections[key].length; ++a) {
-                            io.to(connections[key][a]).emit('user-left', socket.id)
-                        }
-
-                        var index = connections[key].indexOf(socket.id)
-
-                        connections[key].splice(index, 1)
-
-
-                        if (connections[key].length === 0) {
-                            delete connections[key]
-                        }
-                    }
-                }
-
+          socket.on("disconnect-call", () => {
+            const username = usernames[socket.id];
+          console.log(`User ${username} has clicked End Call`);
+    
+          // Log the user's disconnect time
+          var diffTime = Math.abs(timeOnline[socket.id] - new Date());
+    
+          let roomKey;
+    
+          // Find the room the user belongs to by iterating through connections
+          for (const [roomId, users] of Object.entries(connections)) {
+            if (users.includes(socket.id)) {
+              roomKey = roomId;
+              break;
             }
-
-
-        })
-
-
-    })
+          }
+    
+          if (roomKey) {
+            // Notify other users in the room that this user has left
+            connections[roomKey].forEach((userSocketId) => {
+              if (userSocketId !== socket.id) {
+                // Don't notify the disconnecting user
+                io.to(userSocketId).emit("user-left",socket.id, username);
+              }
+            });
+    
+            // Remove the disconnecting user from the room's user list
+            const userIndex = connections[roomKey].indexOf(socket.id);
+            if (userIndex !== -1) {
+              connections[roomKey].splice(userIndex, 1); // Remove user from room
+            }
+    
+            // If the room is empty, delete the room
+            if (connections[roomKey].length === 0) {
+              delete connections[roomKey];
+            }
+    
+            // Manually disconnect the user from the backend
+            socket.disconnect();
+          }
+        });
+    
+        socket.on("disconnect", () => {
+            const username = usernames[socket.id];
+            console.log(`User ${username} (${socket.id}) has disconnected`);
+    
+          let roomKey;
+    
+          // Find which room the user was part of
+          for (const [roomId, users] of Object.entries(connections)) {
+            if (users.includes(socket.id)) {
+              roomKey = roomId;
+              break;
+            }
+          }
+    
+          if (roomKey) {
+            // Notify other users in the room that this user has left
+            connections[roomKey].forEach((userSocketId) => {
+              if (userSocketId !== socket.id) {
+                // Don't notify the disconnecting user
+                io.to(userSocketId).emit("user-left", socket.id,username);
+              }
+            });
+    
+            // Remove the disconnecting user from the room's user list
+            const userIndex = connections[roomKey].indexOf(socket.id);
+            if (userIndex !== -1) {
+              connections[roomKey].splice(userIndex, 1); // Remove user from room
+            }
+    
+            // If the room is now empty, delete the room
+            if (connections[roomKey].length === 0) {
+              delete connections[roomKey];
+            }
+          }
+    
+          // Cleanup: remove socket data from any other tracking structures
+          delete timeOnline[socket.id]; // If you're tracking when users are online
+        });
+      });
 
 
     return io;

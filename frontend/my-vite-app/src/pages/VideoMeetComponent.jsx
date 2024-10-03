@@ -12,6 +12,7 @@ import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
 import ChatIcon from "@mui/icons-material/Chat";
 import { json, useNavigate } from "react-router-dom";
+import {useSnackbar} from 'notistack';
 import server from "../environment";
 
 const server_url = server;
@@ -23,6 +24,7 @@ const peerConfigConnections = {
 };
 
 export default function VideoMeetComponent() {
+  const { enqueueSnackbar } = useSnackbar();
   const socketRef = useRef();
   let socketIdRef = useRef();
 
@@ -286,16 +288,20 @@ export default function VideoMeetComponent() {
     socketRef.current.on("signal", gotMessageFromServer);
 
     socketRef.current.on("connect", () => {
-      socketRef.current.emit("join-call", window.location.href);
+      socketRef.current.emit("join-call", window.location.href,username);
       socketIdRef.current = socketRef.current.id;
 
       socketRef.current.on("chat-message", addMessage);
 
-      socketRef.current.on("user-left", (id) => {
+      socketRef.current.on("user-left", (id,username) => {
         setVideos((videos) => videos.filter((video) => video.socketId !== id));
+        console.log(`User: ${username} has left the call.`);
+        enqueueSnackbar(`${username} left the call.`,{variant:'error',anchorOrigin:{vertical:'top',horizontal:'center'}});
       });
 
-      socketRef.current.on("user-joined", (id, clients) => {
+      socketRef.current.on("user-joined", (id, clients,username) => {
+        console.log(clients);
+        enqueueSnackbar(`${username}  Join the call.`,{variant:'success',anchorOrigin:{vertical:'top',horizontal:'center'}});
         clients.forEach((socketListId) => {
           connections[socketListId] = new RTCPeerConnection(
             peerConfigConnections
@@ -387,6 +393,21 @@ export default function VideoMeetComponent() {
       });
     });
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (socketRef.current) {
+        socketRef.current.emit("disconnect-call", socketIdRef.current);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   let getMedia = () => {
     setVideo(videoAvailable);
@@ -483,16 +504,22 @@ export default function VideoMeetComponent() {
     socketRef.current.emit("chat-message", message, username);
     setMessage("");
   };
+  let handleEndCall = () => {
+    // Emit a 'disconnect-call' event to notify the server
+    socketRef.current.emit("disconnect-call", socketIdRef.current); // Emit disconnect event
 
-  let handleEndCall = () =>{
     try {
+      // Stop all media tracks (local video/audio)
       let tracks = localVideoRef.current.srcObject.getTracks();
-      tracks.forEach(track=>track.stop())
+      tracks.forEach((track) => track.stop());
+      console.log("track stop");
     } catch (error) {
-      console.log(e);
+      console.log("Error stopping media tracks:", error);
     }
+
+    // Redirect or clean up the UI
     routeTo("/home");
-  }
+  };
 
   return (
     <div className="videoMeetPage landingPageContainer">
@@ -641,7 +668,7 @@ export default function VideoMeetComponent() {
                 </div>
               ))
             ) : (
-              <p>No videos connected</p>
+              <p style={{color:'black'}}>No videos connected</p>
             )}
           </div>
         </div>

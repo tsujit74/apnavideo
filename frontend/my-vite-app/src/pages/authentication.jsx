@@ -20,6 +20,7 @@ import { useUser } from '../contexts/UserContext';
 import httpStatus from "http-status";
 import '../App.css'
 import NavComponent from "./navComponent";
+import { useSnackbar } from 'notistack';
 
 
 
@@ -28,6 +29,9 @@ import NavComponent from "./navComponent";
 const defaultTheme = createTheme();
 
 export default function Authentication() {
+
+  const {enqueueSnackbar} = useSnackbar();
+
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [name, setName] = React.useState("");
@@ -49,6 +53,7 @@ export default function Authentication() {
                 setUsername(result)
                 localStorage.setItem("username", username); 
                 setUser(username);
+                enqueueSnackbar(`${username} Login Sucess Fully`,{variant:'success',anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000});
                 setMessage("Login successful");
                 setOpen(true);
                 setError("");
@@ -61,6 +66,7 @@ export default function Authentication() {
                 let result = await handleRegister(name, username, password);
                 console.log(result);
                 setUsername("");
+                enqueueSnackbar(`${name} Registration Sucessfully`,{variant:"success",anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000});
                 setMessage("Registration successful");
                 setOpen(true);
                 setError("");
@@ -71,6 +77,10 @@ export default function Authentication() {
             console.log(err);
             let errorMsg = err.response?.data?.message || "An error occurred";
             setError(errorMsg);
+            enqueueSnackbar(errorMsg, {
+              variant: 'error',  
+              anchorOrigin: { vertical: 'top', horizontal: 'center' }, 
+              autoHideDuration: 2000, });
         }
     };
 
@@ -172,7 +182,7 @@ export default function Authentication() {
     </Grid>
   </Grid>
 
-  <Snackbar open={open} autoHideDuration={4000} message={message} />
+  <Snackbar open={open} autoHideDuration={2000} message={message} />
 </ThemeProvider>
 
         </div>

@@ -1,36 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../contexts/UserContext';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
+import { useSnackbar } from "notistack";
+import UserDropdown from "./UserDropdown";
 
 export default function NavComponent() {
-    const navigate = useNavigate();
-    //const [username, setUsername] = useState(null);
-    const {user,setUser} = useUser();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const { user, setUser } = useUser();
 
-    useEffect(() => {
-        const storedUsername = localStorage.getItem('username');
-        if (storedUsername) {
-            setUser(storedUsername);
-        }
-    }, []);
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+      setUser(storedUsername);
+    }
+  }, [setUser]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token'); // Remove token
-        localStorage.removeItem('username'); // Remove username
-        setUser(null); // Clear local state
-        navigate('/auth'); // Redirect to login
-    };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
 
-    return (
-        <div className='navBar'>
-            <nav>
-                <div className="navLogo" onClick={() => navigate("/")}>
-                    <h2>Apna Video</h2>
-                </div>
-                <div className="navList">
-                {user ? (
+    const token = localStorage.getItem("token");
+    const storedUsername = localStorage.getItem("username");
+
+    if (!token && !storedUsername) {
+      setUser(null);
+      enqueueSnackbar("Successfully logged out.", {
+        variant: "success",
+        anchorOrigin: { vertical: "top", horizontal: "center" },
+      });
+      navigate("/");
+    } else {
+      enqueueSnackbar("Failed to log out. Please try again.", {
+        variant: "error",
+        anchorOrigin: { vertical: "top", horizontal: "center" },
+      });
+    }
+  };
+
+  return (
+    <div className="navBar">
+      <nav>
+        <div className="navLogo" onClick={() => navigate("/")}>
+          <h2>Apna Video</h2>
+        </div>
+        <div className="navList">
+          {user ? (
             <>
-              <p style={{fontWeight:"bold"}}>{user}</p>
+              <p style={{ fontWeight: "bold" }}>{user}</p>
+              <UserDropdown username={user}/>
               <p onClick={handleLogout}>Logout</p>
             </>
           ) : (
@@ -42,8 +60,8 @@ export default function NavComponent() {
               </div>
             </>
           )}
-                </div>
-            </nav>
         </div>
-    );
+      </nav>
+    </div>
+  );
 }

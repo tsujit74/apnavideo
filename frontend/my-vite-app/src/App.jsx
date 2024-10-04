@@ -12,8 +12,8 @@ import Footer from "./pages/Footer.jsx";
 import { useState } from "react";
 import { UserProvider } from "./contexts/UserContext.jsx";
 import { SnackbarProvider } from "notistack";
-//import { AuthProvider } from "./contexts/AuthContext.jsx";
-
+import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
+import TermsOfService from "./pages/TermsOfServices.jsx";
 function App() {
   // const [user, setUser] = useState(null);
   return (
@@ -29,6 +29,9 @@ function App() {
                 <Route path="/home" element={<HomeComponent />} />
                 <Route path="/history" element={<History />} />
                 <Route path="/:url" element={<VideoMeetComponent />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-service" element={<TermsOfService/>} />
+                <Route component={<NotFound/>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthProvider>

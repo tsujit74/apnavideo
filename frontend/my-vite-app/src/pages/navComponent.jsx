@@ -28,12 +28,14 @@ export default function NavComponent() {
       enqueueSnackbar("Successfully logged out.", {
         variant: "success",
         anchorOrigin: { vertical: "top", horizontal: "center" },
+        autoHideDuration:2000
       });
       navigate("/");
     } else {
       enqueueSnackbar("Failed to log out. Please try again.", {
         variant: "error",
         anchorOrigin: { vertical: "top", horizontal: "center" },
+        autoHideDuration:2000
       });
     }
   };

@@ -40,7 +40,7 @@ function HomeComponent() {
               <RestoreIcon sx={{ml:2,mr:2}} />
             </IconButton>
 
-            <Button
+            {/* <Button
               onClick={() => {
                 localStorage.removeItem("token");
                 localStorage.removeItem('username');
@@ -49,7 +49,7 @@ function HomeComponent() {
               }}
             >
               Logout
-            </Button>
+            </Button> */}
           </div>
         </div>
 

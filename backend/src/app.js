@@ -20,6 +20,11 @@ app.use(express.urlencoded({limit:"40kb", extended: true}));
 
 app.use("/api/v1/users",userRoutes);
 
+app.use((req, res, next) => {
+  res.status(404).send({ message: "Page not found" });
+});
+
+
 app.get("/home", (req, res) => {
   res.send("done it work");
 });

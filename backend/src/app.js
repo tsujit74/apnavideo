@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from "express";
 import { createServer } from "node:http";
 
@@ -10,6 +13,7 @@ import cors from "cors";
 import userRoutes from './routes/userRoutes.js'
 
 const app = express();
+const uri = process.env.ATLASDB_URL;
 const server = createServer(app);
 const io = connectToSocket(server)
 
@@ -30,10 +34,12 @@ app.get("/home", (req, res) => {
 });
 
 const start = async () => {
-  const connectiondb = await mongoose.connect(
-    "mongodb+srv://tsujit995552:rcBNF7H1ZXDePz4t@apnavideo.v14bp.mongodb.net/?retryWrites=true&w=majority&appName=apnavideo"
-  );
-  console.log(`Mongo Connected DB host: ${connectiondb.connection.host}`)
+  mongoose.connect(uri, {
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error: ", err));
+
+  
   server.listen(app.get("port"), () => {
     console.log("Listing at port 5500");
   });

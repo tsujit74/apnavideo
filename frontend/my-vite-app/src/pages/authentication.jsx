@@ -50,7 +50,7 @@ export default function Authentication() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-
+  
   const handleAuth = async () => {
     setLoading(true);
     try {
@@ -60,7 +60,7 @@ export default function Authentication() {
         setUsername(result);
         localStorage.setItem("username", username);
         setUser(username);
-        enqueueSnackbar(`${username} Login Sucess Fully`, {
+        enqueueSnackbar(`${username} Login Successfully`, {
           variant: "success",
           anchorOrigin: { vertical: "top", horizontal: "center" },
           autoHideDuration: 2000,
@@ -68,35 +68,39 @@ export default function Authentication() {
         setMessage("Login successful");
         setOpen(true);
         setError("");
-        // Navigate to homepage after successful login
-        console.log(result, " authentication");
+        console.log(result, "authentication");
         navigate("/home");
       }
+  
       if (formState === 1) {
-        // Register action
-        let result = await handleRegister(name, username, password);
         if (name === "" || username === "" || email === "" || password === "") {
-          enqueueSnackbar("All field Required", {
+          enqueueSnackbar("All fields are required", {
             variant: "error",
             anchorOrigin: { vertical: "top", horizontal: "center" },
             autoHideDuration: 2000,
           });
-          setError("All Field Required");
+          setError("All fields are required");
+          setLoading(false);
           return;
         }
-        if(!validateEmail){
+  
+        // Email validation
+        if (!validateEmail(email)) {
           setEmailError(true);
-          enqueueSnackbar("Email is Not valid", {
+          enqueueSnackbar("Email is not valid", {
             variant: "error",
             anchorOrigin: { vertical: "top", horizontal: "center" },
             autoHideDuration: 2000,
           });
-          return
+          setLoading(false);
+          return;
         }
-
+  
+        let result = await handleRegister(name, username, email, password);
         console.log(result);
         setUsername("");
-        enqueueSnackbar(`${name} Registration Sucessfully`, {
+        setEmail("");
+        enqueueSnackbar(`${name} Registered Successfully`, {
           variant: "success",
           anchorOrigin: { vertical: "top", horizontal: "center" },
           autoHideDuration: 2000,
@@ -104,7 +108,7 @@ export default function Authentication() {
         setMessage("Registration successful");
         setOpen(true);
         setError("");
-        setFormState(0);
+        setFormState(0); // Switch to login form after registration
         setPassword("");
       }
     } catch (err) {
@@ -120,7 +124,7 @@ export default function Authentication() {
       setLoading(false);
     }
   };
-
+  
   const defaultTheme = createTheme({
     palette: {
       primary: {

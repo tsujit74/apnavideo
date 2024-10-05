@@ -32,6 +32,8 @@ export default function Authentication() {
 
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [emailError, setEmailError] = useState(false);
   const [name, setName] = React.useState("");
   const [error, setError] = React.useState("");
   const [message, setMessage] = React.useState("");
@@ -43,6 +45,11 @@ export default function Authentication() {
 
   const { setUser } = useUser();
   const [loading, setLoading] = useState(false);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleAuth = async () => {
     setLoading(true);
@@ -68,7 +75,7 @@ export default function Authentication() {
       if (formState === 1) {
         // Register action
         let result = await handleRegister(name, username, password);
-        if (name === "" || username === "" || password === "") {
+        if (name === "" || username === "" || email === "" || password === "") {
           enqueueSnackbar("All field Required", {
             variant: "error",
             anchorOrigin: { vertical: "top", horizontal: "center" },
@@ -77,6 +84,16 @@ export default function Authentication() {
           setError("All Field Required");
           return;
         }
+        if(!validateEmail){
+          setEmailError(true);
+          enqueueSnackbar("Email is Not valid", {
+            variant: "error",
+            anchorOrigin: { vertical: "top", horizontal: "center" },
+            autoHideDuration: 2000,
+          });
+          return
+        }
+
         console.log(result);
         setUsername("");
         enqueueSnackbar(`${name} Registration Sucessfully`, {
@@ -137,7 +154,7 @@ export default function Authentication() {
               justifyContent: "center",
               alignItems: "flex-start",
               bgcolor: "#fff",
-              mt: 1,
+              marginTop:"0",
             }}
           >
             <CssBaseline />
@@ -152,11 +169,12 @@ export default function Authentication() {
             >
               <Box
                 sx={{
-                  my: 8,
+                  my: 4,
                   mx: 4,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
+                  opacity: loading ? 0.5 : 1,
                 }}
               >
                 <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -206,6 +224,22 @@ export default function Authentication() {
                     helperText={error}
                     onChange={(e) => setUsername(e.target.value)}
                   />
+
+                  {formState === 1 && (
+                    <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="email"
+                      label="Email"
+                      name="email"
+                      value={email}
+                      error={emailError}
+                      helperText={error}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  )}
+
                   <TextField
                     margin="normal"
                     required

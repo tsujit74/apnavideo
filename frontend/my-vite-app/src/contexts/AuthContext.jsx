@@ -15,11 +15,12 @@ export const AuthProvider = ({ children }) => {
 
   const [userData, setUserData] = useState(authContext);
 
-  const handleRegister = async (name, username, password) => {
+  const handleRegister = async (name, username,email, password) => {
     try {
       let request = await client.post("/register", {
         name: name,
         username: username,
+        email:email,
         password: password,
       });
       if (request.status === httpStatus.CREATED) {

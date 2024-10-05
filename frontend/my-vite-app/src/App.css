@@ -142,6 +142,7 @@ nav img{
 /*authentication*/
 .authentication{
   height: 80vh;
+  margin-bottom: 50%;
 }
 
 /* page Not Found */
@@ -168,7 +169,7 @@ nav img{
 
 .landingPageContainer{
   width: 90%;
-  height: 80vh;
+  height: 87vh;
 }
 
   .landingMain{
@@ -182,6 +183,7 @@ nav img{
 
   .landingMain h1{
     font-size: 18px;
+    margin-top: 10%;
   }
 
   .landingMain p{
@@ -196,7 +198,7 @@ nav img{
 
   .landingMain .getStart{
     position: absolute;
-    top: 65%;
+    top: 70%;
     left: 30%;
     z-index: 9;
   }
@@ -211,6 +213,7 @@ nav img{
   
   .meetContainer{
     display: block;
+    height: fit-content;
   }
 
   .leftPanel{
@@ -220,6 +223,12 @@ nav img{
   .leftPanel h2{
     font-size: 1.2rem;
   }
+
+  .leftPanelTextField{
+    display: "flex";
+    gap: "10px";
+    margin-top: "10px"
+ }
 
   .rightPanel{
     margin: 0 auto;

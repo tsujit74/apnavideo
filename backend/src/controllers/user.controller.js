@@ -39,11 +39,12 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { name, username, password } = req.body;
+  const { name, username,email, password } = req.body;
 
   try {
     const existingUser = await User.findOne({ username });
-    if (existingUser) {
+    const existingUserEmail = await User.findOne({email});
+    if (existingUser || existingUserEmail) {
       return res
         .status(httpStatus.FOUND)
         .json({ message: "user already exists" });
@@ -54,6 +55,7 @@ const register = async (req, res) => {
     const newUser = new User({
       name: name,
       username: username,
+      email: email,
       password: hashedPassword,
     });
 

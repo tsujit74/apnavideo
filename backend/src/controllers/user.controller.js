@@ -50,6 +50,12 @@ const register = async (req, res) => {
         .json({ message: "user already exists" });
     }
 
+    if (password.length <= 6) {
+      return res
+        .status(httpStatus.LENGTH_REQUIRED)
+        .json({ message: "Passwod should be 6 Letter" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({

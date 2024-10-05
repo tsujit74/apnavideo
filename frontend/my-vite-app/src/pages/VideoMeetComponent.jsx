@@ -15,7 +15,7 @@ import { json, useNavigate } from "react-router-dom";
 import {useSnackbar} from 'notistack';
 import server from "../environment";
 
-const server_url = "http://localhost:5500";
+const server_url = server;
 
 let connections = {};
 

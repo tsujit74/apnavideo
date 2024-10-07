@@ -20,16 +20,7 @@ const Footer = () => {
           <Link className="link" to="/terms-service">
             Terms of Service
           </Link>
-          <Link
-            onClick={() => {
-              enqueueSnackbar("Out of Service.", {
-                variant: "info",
-                anchorOrigin: { vertical: "top", horizontal: "center" },
-                autoHideDuration:2000
-              });
-            }}
-          >
-            <a href="#">Contact Us</a>
+          <Link to={'/contact-page'}>
           </Link>
         </ul>
 

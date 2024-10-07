@@ -7,7 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 
 const client = axios.create({
-  baseURL: `http://localhost:5500/api/v1/`,
+  baseURL: `https://apnavideobackend.onrender.com/api/v1/`,
 });
 
 const validateEmail = (email) => {

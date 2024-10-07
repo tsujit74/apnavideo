@@ -4,11 +4,12 @@ import { Typography } from '@mui/material';
 import '../styles/ContactPage.css'; // Import the CSS file
 import { useSnackbar } from 'notistack';
 import CircularProgress from "@mui/material/CircularProgress";
+import { AuthContext } from '../contexts/AuthContext';
 
 
-const client = axios.create({
-  baseURL: `https://apnavideobackend.onrender.com/api/v1/`,
-});
+// const client = axios.create({
+//   baseURL: `https://localhost:5500/api/v1/`,
+// });
 
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,56 +26,78 @@ const ContactPage = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const {handleMessage} = React.useContext(AuthContext)
+
   const handleSubmit = async (e) => {
-    setLoading(true);
+    // setLoading(true);
     e.preventDefault();
 
     try {
-      if(!name || !email || !message){
-        enqueueSnackbar("All field Required",{variant:"error",anchorOrigin:{vertical:'top',horizontal:'center'}})
-        return;
-      }
-
-      if (!validateEmail(email)) {
-        enqueueSnackbar("Email is not valid", { variant: "error", anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 2000 });
-        return;
-      }
-
-      await client.post('/contact', {
-        name,
-        email,
-        message,
-        
+      let result = await handleMessage(name, email, message);
+      console.log(result);
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch(err) {
+      console.log(err);
+      let errorMsg = err.response?.data?.message || "An error occurred";
+      // setError(errorMsg);
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+        anchorOrigin: { vertical: "top", horizontal: "center" },
+        autoHideDuration: 2000,
       });
-      
-      enqueueSnackbar("Message Sent",{variant:"success",anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000})
-      setSuccessMessage('Your message has been sent successfully!');
-      setErrorMessage('');
-      setName('');
-      setEmail('');
-      setMessage('');
-      // setTimeout(() => {
-      //   setSuccessMessage('');
-      // }, 3000);
-
-      setTimeout(() => {
-        setShowConfirmation(true);
-      }, 7000);
-
-      setTimeout(() => {
-        setShowConfirmation(false);
-      }, 12000);
-
-    } catch (error) {
-      setErrorMessage('There was an error sending your message. Please try again.');
-      enqueueSnackbar("Message Not sent",{variant:"error",anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000})
-      setSuccessMessage('');
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 3000);
-    }finally{
-      setLoading(false);
     }
+
+    // try {
+    //   let result = await handleMessage(name,email,message);
+    //   if(!name || !email || !message){
+    //     enqueueSnackbar("All field Required",{variant:"error",anchorOrigin:{vertical:'top',horizontal:'center'}})
+    //     return;
+    //   }
+
+    //   if (!validateEmail(email)) {
+    //     enqueueSnackbar("Email is not valid", { variant: "error", anchorOrigin: { vertical: 'top', horizontal: 'center' }, autoHideDuration: 2000 });
+    //     return;
+    //   }
+
+    //   // await client.post('/contact', {
+    //   //   name,
+    //   //   email,
+    //   //   message,
+        
+    //   // });
+      
+    //   enqueueSnackbar("Message Sent",{variant:"success",anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000})
+    //   setSuccessMessage('Your message has been sent successfully!');
+    //   setErrorMessage('');
+    //   setName('');
+    //   setEmail('');
+    //   setMessage('');
+    //   // setTimeout(() => {
+    //   //   setSuccessMessage('');
+    //   // }, 3000);
+
+    //   setTimeout(() => {
+    //     setShowConfirmation(true);
+    //   }, 7000);
+
+    //   setTimeout(() => {
+    //     setShowConfirmation(false);
+    //   }, 12000);
+
+    // } catch (err) {
+    //   console.log(err)
+    //   let errorMsg = err.response?.data?.message || "An error occurred";
+    //   setErrorMessage('There was an error sending your message. Please try again.');
+    //   enqueueSnackbar(errorMsg,{variant:"error",anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000})
+    //   setSuccessMessage('');
+    //   setTimeout(() => {
+    //     setErrorMessage('');
+    //   }, 3000);
+    // }finally{
+    //   setLoading(false);
+    // }
   };
 
   return (

@@ -20,7 +20,7 @@ const Footer = () => {
           <Link className="link" to="/terms-service">
             Terms of Service
           </Link>
-          <Link to={'/contact-page'}>
+          <Link to={'/contact-page'}>Contact Us
           </Link>
         </ul>
 

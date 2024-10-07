@@ -15,6 +15,22 @@ export const AuthProvider = ({ children }) => {
 
   const [userData, setUserData] = useState(authContext);
 
+  const handleMessage = async (name,email,message) =>{
+    try{
+      let request = await client.post("/sendMessage",{
+        name:name,
+        email:email,
+        message:message,
+      });
+      if(request.status === httpStatus.OK){
+        console.log("every thing ok done.");
+        return request.data.message;
+      }
+    }catch(err){
+      throw err;
+    }
+  }
+
   const handleRegister = async (name, username,email, password) => {
     try {
       let request = await client.post("/register", {
@@ -84,6 +100,7 @@ export const AuthProvider = ({ children }) => {
     handleLogin,
     getHistoryOfUser,
     addToUserHistory,
+    handleMessage,
   };
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;
 };

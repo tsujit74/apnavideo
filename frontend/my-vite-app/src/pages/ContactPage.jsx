@@ -5,6 +5,7 @@ import "../styles/ContactPage.css"; // Import the CSS file
 import { useSnackbar } from "notistack";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 // const client = axios.create({
 //   baseURL: `https://localhost:5500/api/v1/`,
@@ -16,6 +17,7 @@ const validateEmail = (email) => {
 };
 
 const ContactPage = () => {
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -59,7 +61,7 @@ const ContactPage = () => {
       setName("");
       setEmail("");
       setMessage("");
-  
+      navigate('/');
       enqueueSnackbar("Message sent successfully!", {
         variant: "success",
         anchorOrigin: { vertical: "top", horizontal: "center" },

@@ -11,7 +11,7 @@ import { connectToSocket } from "./controllers/socketManager.js";
 
 import cors from "cors";
 import userRoutes from './routes/userRoutes.js'
-import contactRoutes from './routes/contactRoutes.js'
+//import contactRoutes from './routes/contactRoutes.js'
 
 const app = express();
 const uri = process.env.ATLASDB_URL;

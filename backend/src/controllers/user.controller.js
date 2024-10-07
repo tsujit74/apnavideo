@@ -110,39 +110,51 @@ const addToHistory = async (req, res) => {
 //const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const transporter = nodemailer.createTransport({
-  service:"gmail",
-  auth:{
-      user:process.env.EMAIL_USER,
-      pass:process.env.EMAIL_PASS,
-  }
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
-const sendMessage = async (req,res)=>{
-  const {name,email,message} = req.body;
+const sendMessage = async (req, res) => {
+  const { name, email, message } = req.body;
 
   if (!name || !email || !message) {
     return res
       .status(httpStatus.BAD_REQUEST)
-      .json({ message: 'Please fill in all the fields.' });
+      .json({ message: "Please fill in all the fields." });
   }
 
   const mailOptions = {
-      from: email,
-      to: "apnavideo6633@gmail.com",
-      subject: `Contact from ${name}`,
-      text: message,
-      replyTo: email,
-    };
-  
-    try {
-      await transporter.sendMail(mailOptions);
-      return res.status(httpStatus.OK).json({ message: 'Message sent successfully!' });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      res.status(httpStatus.NOT_FOUND).json({ message: 'Error sending message. Please try again.' });
-    }
-}
+    from: email,
+    to: "apnavideo6633@gmail.com",
+    subject: `Contact from ${name}`,
+    text: message,
+    replyTo: email,
+  };
 
+  const userReplyOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: `Thank you for contacting us, ${name}`,
+    text: `Dear ${name},\n\nThank you for reaching out. We have received your message and will get back to you shortly.\n\n\nBest regards,\nApna Video Team`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+
+    await transporter.sendMail(userReplyOptions);
+    return res
+      .status(httpStatus.OK)
+      .json({ message: "Message sent successfully!" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res
+      .status(httpStatus.NOT_FOUND)
+      .json({ message: "Error sending message. Please try again." });
+  }
+};
 
 // const sendMessage = async (req, res) => {
 //   const { name, email, message } = req.body;
@@ -188,4 +200,4 @@ const sendMessage = async (req,res)=>{
 //   }
 // };
 
-export { login, register, getUserHistory, addToHistory,sendMessage };
+export { login, register, getUserHistory, addToHistory, sendMessage };

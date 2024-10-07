@@ -14,6 +14,7 @@ import { UserProvider } from "./contexts/UserContext.jsx";
 import { SnackbarProvider } from "notistack";
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
 import TermsOfService from "./pages/TermsOfServices.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
 function App() {
   // const [user, setUser] = useState(null);
   return (
@@ -31,7 +32,7 @@ function App() {
                 <Route path="/:url" element={<VideoMeetComponent />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-service" element={<TermsOfService/>} />
-                <Route component={<NotFound/>} />
+                <Route path="/contact-page" element={<ContactPage/>}/>
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthProvider>

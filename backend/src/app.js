@@ -11,6 +11,7 @@ import { connectToSocket } from "./controllers/socketManager.js";
 
 import cors from "cors";
 import userRoutes from './routes/userRoutes.js'
+import contactRoutes from './routes/contactRoutes.js'
 
 const app = express();
 const uri = process.env.ATLASDB_URL;
@@ -23,6 +24,7 @@ app.use(express.json({limit:"40kb"}));
 app.use(express.urlencoded({limit:"40kb", extended: true}));
 
 app.use("/api/v1/users",userRoutes);
+app.use("/api/v1",contactRoutes);
 
 app.use((req, res, next) => {
   res.status(404).send({ message: "Page not found" });

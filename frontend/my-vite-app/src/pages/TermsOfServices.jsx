@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/TermsOfService.css'; // Import the CSS file
 import { useSnackbar } from 'notistack';
 
@@ -31,9 +32,7 @@ export default function TermsOfService() {
       <h2>5. Changes to the Terms</h2>
       <p>We may update these terms from time to time. Continued use of our services after any such changes constitutes your acceptance of the new terms.</p>
 
-      <p>If you have any questions about these terms, feel free to <a href="#" onClick={()=>{
-enqueueSnackbar("Out of Service",{variant:"info",anchorOrigin:{vertical:'top',horizontal:'center'}});
-      }}>contact us</a>.</p>
+      <p>If you have any questions about these terms, feel free to <Link to={"/contact-page"}> contact us</Link>.</p>
     </div>
   );
 }

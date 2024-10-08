@@ -50,7 +50,8 @@ const ResetPassword = () => {
   
     } catch (error) {
       setMessage(error.response.data.message || "An error occurred.");
-      enqueueSnackbar("Password Not Update", {
+      let errorMsg = error.response?.data?.message || "An error occurred";
+      enqueueSnackbar(errorMsg, {
         variant: "error",
         anchorOrigin: { vertical: "top", horizontal: "center" },
         autoHideDuration: 2000,
@@ -80,6 +81,7 @@ const ResetPassword = () => {
           <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input
+          type="text"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Enter your email"

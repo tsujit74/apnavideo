@@ -200,4 +200,86 @@ const sendMessage = async (req, res) => {
 //   }
 // };
 
-export { login, register, getUserHistory, addToHistory, sendMessage };
+const forgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: "User Not Found" });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000;
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const resetURL = `https://apnavideofrontend.onrender.com/reset-password/${token}`;
+    const mailOptions = {
+      to: user.email,
+      from: process.env.EMAIL_USER,
+      subject: "Password Reset",
+      text: `You requested to reset your password. Please click on the following link, or paste it into your browser to complete the process:\n\n${resetURL}\n\nIf you did not request this, please ignore this email.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res
+      .status(httpStatus.OK)
+      .json({ message: `Password Link Sent to Your Email ${user.email}` });
+  } catch (err) {
+    res.status(httpStatus.BAD_REQUEST).json({ message: "Error Sending mail" });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const {token} = req.params;
+    const { password } = req.body;
+
+    if (!token || !password) {
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ message: "Token and new password are required." });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: "Password reset token is invalid or has expired" });
+    }
+
+    if (password.length < 6) {
+      return res
+        .status(httpStatus.LENGTH_REQUIRED)
+        .json({ message: "Passwod should be 6 Letter" });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.status(httpStatus.CREATED).json({ message: "Password Updated!" });
+  } catch (error) {
+    res.json({ message: "Not Updated" });
+  }
+};
+
+export { login, register, getUserHistory, addToHistory, sendMessage,forgetPassword,resetPassword };

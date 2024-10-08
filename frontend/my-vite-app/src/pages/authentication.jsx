@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+import {Link} from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -50,7 +50,7 @@ export default function Authentication() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-  
+
   const handleAuth = async () => {
     setLoading(true);
     try {
@@ -71,7 +71,7 @@ export default function Authentication() {
         console.log(result, "authentication");
         navigate("/home");
       }
-  
+
       if (formState === 1) {
         if (name === "" || username === "" || email === "" || password === "") {
           enqueueSnackbar("All fields are required", {
@@ -83,7 +83,7 @@ export default function Authentication() {
           setLoading(false);
           return;
         }
-  
+
         // Email validation
         if (!validateEmail(email)) {
           setEmailError(true);
@@ -95,7 +95,7 @@ export default function Authentication() {
           setLoading(false);
           return;
         }
-  
+
         let result = await handleRegister(name, username, email, password);
         console.log(result);
         setUsername("");
@@ -124,7 +124,7 @@ export default function Authentication() {
       setLoading(false);
     }
   };
-  
+
   const defaultTheme = createTheme({
     palette: {
       primary: {
@@ -158,7 +158,7 @@ export default function Authentication() {
               justifyContent: "center",
               alignItems: "flex-start",
               bgcolor: "#fff",
-              marginTop:"0",
+              marginTop: "0",
             }}
           >
             <CssBaseline />
@@ -257,6 +257,8 @@ export default function Authentication() {
                     onChange={(e) => setPassword(e.target.value)}
                     id="password"
                   />
+
+                  <Link to={"/forget-password"}>Forget Password</Link>
 
                   <p style={{ color: "red" }}>{error}</p>
 

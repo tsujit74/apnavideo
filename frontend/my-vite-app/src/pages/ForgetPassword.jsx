@@ -25,7 +25,7 @@ const ForgetPassword = () => {
       setMessage(response.data.message);
       setOpen(true);
       // Optionally redirect to another page after success
-      setTimeout(() => navigate('/auth'), 2000);
+      setTimeout(() => navigate('/reset-password'), 2000);
     } catch (error) {
       setMessage(error.response.data.message || 'An error occurred.');
       setOpen(true);

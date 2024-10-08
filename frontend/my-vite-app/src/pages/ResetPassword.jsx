@@ -7,11 +7,12 @@ import server from "../environment";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const ResetPassword = () => {
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { token } = useParams();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,7 +21,8 @@ const ResetPassword = () => {
     try {
       setLoading(true);
       const response = await axios.post(`${server}/resetPassword`, {
-        token,
+        email,
+        code,
         password,
       });
       setMessage(response.data.message);
@@ -51,16 +53,34 @@ const ResetPassword = () => {
         <h2>Reset Password</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Enter your email"
+        required
+      />
+      <label htmlFor="code">Reset Code:</label>
+      <input
+        type="text"
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+        placeholder="Enter your reset code"
+        required
+      />
             <label htmlFor="password">New Password:</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="New Password"
               required
             />
           </div>
           <button type="submit">Reset Password</button>
+          {message && <p>{message}</p>}
         </form>
 
         <Snackbar

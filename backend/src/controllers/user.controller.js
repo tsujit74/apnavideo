@@ -206,16 +206,16 @@ const forgetPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ message: "User Not Found" });
+      return res.status(httpStatus.NOT_FOUND).json({ message: "User Not Found" });
     }
 
-    const token = crypto.randomBytes(32).toString("hex");
-    user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000;
+    
+    const code = crypto.randomBytes(3).toString("hex");
+    user.resetCode = code;
+    user.resetCodeExpires = Date.now() + 3600000; 
     await user.save();
 
+    
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -224,61 +224,52 @@ const forgetPassword = async (req, res) => {
       },
     });
 
-    const resetURL = `https://apnavideofrontend.onrender.com/reset-password/${token}`;
     const mailOptions = {
       to: user.email,
       from: process.env.EMAIL_USER,
       subject: "Password Reset",
-      text: `You requested to reset your password. Please click on the following link, or paste it into your browser to complete the process:\n\n${resetURL}\n\nIf you did not request this, please ignore this email.`,
+      text: `Your password reset code is: ${code}\n\nThis code is valid for 1 hour.`,
     };
 
     await transporter.sendMail(mailOptions);
-    res
-      .status(httpStatus.OK)
-      .json({ message: `Password Link Sent to Your Email ${user.email}` });
+    res.status(httpStatus.OK).json({ message: `Password Reset Code Sent to Your Email ${user.email}` });
   } catch (err) {
-    res.status(httpStatus.BAD_REQUEST).json({ message: "Error Sending mail" });
+    console.error("Error sending email:", err);
+    res.status(httpStatus.BAD_REQUEST).json({ message: "Error Sending Email" });
   }
 };
 
 const resetPassword = async (req, res) => {
   try {
-    const {token} = req.params;
-    const { password } = req.body;
+    const { email, code, password } = req.body;
 
-    if (!token || !password) {
-      return res
-        .status(httpStatus.BAD_REQUEST)
-        .json({ message: "Token and new password are required." });
+    if (!email || !code || !password) {
+      return res.status(httpStatus.BAD_REQUEST).json({ message: "Email, Code, and New Password are required." });
     }
 
     const user = await User.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() },
+      email,
+      resetCode: code,
+      resetCodeExpires: { $gt: Date.now() },
     });
 
     if (!user) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ message: "Password reset token is invalid or has expired" });
+      return res.status(httpStatus.NOT_FOUND).json({ message: "Password Reset Code is invalid or has expired" });
     }
 
     if (password.length < 6) {
-      return res
-        .status(httpStatus.LENGTH_REQUIRED)
-        .json({ message: "Passwod should be 6 Letter" });
+      return res.status(httpStatus.LENGTH_REQUIRED).json({ message: "Password must be at least 6 characters long." });
     }
 
     user.password = await bcrypt.hash(password, 10);
-
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    user.resetCode = undefined; 
+    user.resetCodeExpires = undefined;
 
     await user.save();
-
-    res.status(httpStatus.CREATED).json({ message: "Password Updated!" });
+    res.status(httpStatus.OK).json({ message: "Password Updated!" });
   } catch (error) {
-    res.json({ message: "Not Updated" });
+    console.error("Error resetting password:", error); 
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Could not update password." });
   }
 };
 

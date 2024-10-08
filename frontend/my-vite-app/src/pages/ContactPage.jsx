@@ -55,7 +55,6 @@ const ContactPage = () => {
   
      
       let result = await handleMessage(name, email, message);
-      console.log(result);
   
       
       setName("");

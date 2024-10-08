@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Snackbar } from "@mui/material";
+import { Snackbar,Button } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/ResetPassword.css";
 import server from "../environment";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useSnackbar } from "notistack";
 
-const ResetPassword = () => {
+const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
+const BackButton = () => {
+  
+}
+
+const ResetPassword = () => {
   const {enqueueSnackbar} = useSnackbar();
 
   const [email, setEmail] = useState('');
@@ -19,10 +27,16 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+
+      setLoading(true);
 
       if (!email || !password || !code) {
         enqueueSnackbar("All fields are required", {
@@ -33,7 +47,33 @@ const ResetPassword = () => {
         return;
       }
 
-      setLoading(true);
+      if (!validateEmail(email)) {
+        enqueueSnackbar("Email is not valid", {
+          variant: "error",
+          anchorOrigin: { vertical: "top", horizontal: "center" },
+          autoHideDuration: 2000,
+        });
+        return;
+      }
+
+      if(code.length !== 6 ){
+        enqueueSnackbar("Code Should be 6 Character", {
+          variant: "error",
+          anchorOrigin: { vertical: "top", horizontal: "center" },
+          autoHideDuration: 2000,
+        });
+        return;
+      }
+
+      if(password.length < 6){
+        enqueueSnackbar("Password must be 6 Character", {
+          variant: "error",
+          anchorOrigin: { vertical: "top", horizontal: "center" },
+          autoHideDuration: 2000,
+        });
+        return;
+      }
+
       const response = await axios.post(`${server}/api/v1/users/resetPassword`, {
         email,
         code,
@@ -42,7 +82,7 @@ const ResetPassword = () => {
       setMessage(response.data.message);
       setOpen(true);
       setTimeout(() => navigate("/auth"), 2000);
-      enqueueSnackbar("Password Update successfully!", {
+      enqueueSnackbar("Password Updated successfully!", {
         variant: "success",
         anchorOrigin: { vertical: "top", horizontal: "center" },
         autoHideDuration: 2000,
@@ -68,6 +108,10 @@ const ResetPassword = () => {
 
   return (
     <div className="resetPassword">
+      <Button variant="outlined" onClick={handleBack}>
+      Back
+    </Button>
+
       {loading && (
         <div
           style={{ position: "absolute", top: "40%", left: "50%", zIndex: 9 }}

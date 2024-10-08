@@ -256,9 +256,11 @@ export default function Authentication() {
                     helperText={error}
                     onChange={(e) => setPassword(e.target.value)}
                     id="password"
+                    sx={{mb:2}}
                   />
 
-                  <Link to={"/forget-password"}>Forget Password</Link>
+                  {formState === 0 &&
+                  <Link to={"/forget-password"} style={{marginTop:'10px',textDecoration:"none"}}>Forget your password</Link>}
 
                   <p style={{ color: "red" }}>{error}</p>
 

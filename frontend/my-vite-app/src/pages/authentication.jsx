@@ -22,6 +22,7 @@ import "../App.css";
 import NavComponent from "./navComponent";
 import { useSnackbar } from "notistack";
 import CircularProgress from "@mui/material/CircularProgress";
+import BackButton from "./BackButton";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -142,6 +143,7 @@ export default function Authentication() {
   return (
     <>
       <div className="authentication">
+        <BackButton/>
         {loading && (
           <div
             style={{ position: "absolute", top: "50%", left: "50%", zIndex: 9 }}

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/ForgetPassword.css';
 import server from '../environment';
 import { useSnackbar } from 'notistack';
+import BackButton from './BackButton';
 
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
@@ -82,6 +83,7 @@ const ForgetPassword = () => {
 
   return (
     <div className="forgetPage">
+      <BackButton/>
       {loading && (
         <div style={{ position: "absolute", top: "40%", left: "50%", zIndex: 9 }}>
           <CircularProgress />

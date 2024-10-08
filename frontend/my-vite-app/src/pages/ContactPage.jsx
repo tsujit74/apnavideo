@@ -6,6 +6,7 @@ import { useSnackbar } from "notistack";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import BackButton from "./BackButton";
 
 // const client = axios.create({
 //   baseURL: `https://localhost:5500/api/v1/`,
@@ -143,6 +144,7 @@ const ContactPage = () => {
 
   return (
     <div className="contact-container">
+      <BackButton/>
       {loading && (
         <div
           style={{ position: "absolute", top: "45%", left: "50%", zIndex: 9 }}

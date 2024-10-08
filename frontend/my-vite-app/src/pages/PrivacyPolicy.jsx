@@ -1,10 +1,12 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
 import '../styles/PrivacyPolicy.css'
+import BackButton from './BackButton';
 
 export default function PrivacyPolicy() {
   return (
     <div className='privacy-policy-container'>
+      <BackButton/>
       <h1>Privacy Policy</h1>
       <p><strong>Last updated:</strong> [01-10-2024]</p>
       <p>

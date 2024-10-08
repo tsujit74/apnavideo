@@ -12,6 +12,7 @@ import { useSnackbar } from "notistack";
 import { RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import Email from "@mui/icons-material/Email";
+import BackButton from "./BackButton";
 
 function HomeComponent() {
   const { enqueueSnackbar } = useSnackbar();
@@ -98,6 +99,7 @@ function HomeComponent() {
   return (
     <>
       <div className="landingPageContainer details">
+        <BackButton/>
         <div className="detailsUserPage">
           <div style={{ display: "flex", alignItems: "center" }}>
             <IconButton

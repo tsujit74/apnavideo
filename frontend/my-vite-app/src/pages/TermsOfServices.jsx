@@ -2,11 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/TermsOfService.css'; // Import the CSS file
 import { useSnackbar } from 'notistack';
+import BackButton from './BackButton';
 
 export default function TermsOfService() {
   const {enqueueSnackbar} = useSnackbar();
   return (
     <div className="terms-of-service-container">
+      <BackButton/>
       <h1>Terms of Service</h1>
 
       <p>Welcome to Apna Video! By using our services, you agree to abide by the following terms and conditions. Please read them carefully.</p>

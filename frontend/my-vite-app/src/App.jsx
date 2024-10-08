@@ -38,7 +38,7 @@ function App() {
                 <Route path="/contact-page" element={<ContactPage />} />
                 <Route path="/forget-password" element={<ForgetPassword />} />
                 <Route
-                  path="/reset-password/:token"
+                  path="/reset-password"
                   element={<ResetPassword />}
                 />
                 <Route path="*" element={<NotFound />} />

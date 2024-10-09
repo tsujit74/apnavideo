@@ -66,7 +66,7 @@ function HomeComponent() {
 
   const shareViaWhatsApp = () => {
     if (meetingCode !== "") {
-      const url = `https://wa.me/?text=Join my meeting with code: ${meetingCode}\n\nClick this link: https://apnavideofrontend.onrender.com`;
+      const url = `https://wa.me/?text=Join my meeting with code: ${meetingCode}  Click this link: https://apnavideofrontend.onrender.com`;
       window.open(url, "_blank");
     } else {
       enqueueSnackbar(`Enter Meeting Code Ex: "a12bcc"`, {

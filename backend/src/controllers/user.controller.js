@@ -72,6 +72,28 @@ const register = async (req, res) => {
 
     await newUser.save();
 
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "apnavideo6633@gmail.com",
+        pass: "ewjlkbewmjaygcds",
+      },
+    });
+
+    
+    const mailOptions = {
+      to: email,
+      from: "apnavideo@gmail.com",
+      subject: "Thank You for Registering!",
+      text: `Welcome ${name}, \n\nThank you for joining APNA VIDEO! We’re thrilled to have you on board. Your decision to be a part of our community means a lot to us, and we are committed to providing you with the best experience possible. Whether you're here to explore, learn, or connect, we're excited to accompany you on this journey. If you ever have questions or need assistance, don't hesitate to reach out. Welcome to the APNA VIDEO family, and let’s make great things happen together! \n\n Best Regards \n Apna Video team `,
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.log("");
+    }
+
     res.status(httpStatus.CREATED).json({ message: "User registerd" });
   } catch (err) {
     res.json({ message: `Something went wrong ${err}` });

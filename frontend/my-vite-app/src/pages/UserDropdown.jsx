@@ -16,6 +16,15 @@ const UserDropdown = ({ username }) => {
 
   const { user, setUser } = useUser();
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.isAdmin) {
+      setIsAdmin(true);
+    }
+  }, []);
+
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
@@ -34,27 +43,16 @@ const UserDropdown = ({ username }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
-
-    const token = localStorage.getItem("token");
-    const storedUsername = localStorage.getItem("username");
-
-    if (!token && !storedUsername) {
-      setUser(null);
-      enqueueSnackbar("Successfully logged out.", {
-        variant: "success",
-        anchorOrigin: { vertical: "top", horizontal: "center" },
-        autoHideDuration:2000,
-      });
-      navigate("/");
-    } else {
-      // If either token or username wasn't removed, show an error
-      enqueueSnackbar("Failed to log out. Please try again.", {
-        variant: "error",
-        anchorOrigin: { vertical: "top", horizontal: "center", },
-        autoHideDuration:2000,
-      });
-    }
+    
+    setUser(null);
+    enqueueSnackbar("Successfully logged out.", {
+      variant: "success",
+      anchorOrigin: { vertical: "top", horizontal: "center" },
+      autoHideDuration: 2000,
+    });
+    navigate("/");
   };
+  
 
   const outService=() =>{
     enqueueSnackbar("This feature is under development!",{variant:'info',anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000});
@@ -93,7 +91,7 @@ const UserDropdown = ({ username }) => {
         }}
         PaperProps={{
           style: {
-            width: "200px", // Set the desired width
+            width: "200px", 
           },
         }}
       >
@@ -107,7 +105,12 @@ const UserDropdown = ({ username }) => {
         <MenuItem onClick={outService}>Profile</MenuItem>
         <MenuItem onClick={outService}>Settings</MenuItem>
         <MenuItem onClick={handleClose}><Link to={"/contact-page"} style={{textDecoration:'none',color:'black'}}> Contact Us</Link></MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        {isAdmin && (
+          <MenuItem onClick={handleClose}>
+            <Link to={"/admin-dashboard"} style={{textDecoration:'none',color:'black'}}>Admin</Link>
+          </MenuItem>
+        )}
+        <MenuItem onClick={handleLogout} style={{color:'red'}}>Logout</MenuItem>
       </Menu>
     </div>
   );

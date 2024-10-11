@@ -17,6 +17,7 @@ import TermsOfService from "./pages/TermsOfServices.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import ForgetPassword from "./pages/ForgetPassword.jsx";
 import ResetPassword from './pages/ResetPassword.jsx'
+import AdminPage from "./pages/AdminPage.jsx";
 
 function App() {
   // const [user, setUser] = useState(null);
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/terms-service" element={<TermsOfService />} />
                 <Route path="/contact-page" element={<ContactPage />} />
                 <Route path="/forget-password" element={<ForgetPassword />} />
+                <Route path="/admin-dashboard" element={<AdminPage/>}></Route>
                 <Route
                   path="/reset-password"
                   element={<ResetPassword />}

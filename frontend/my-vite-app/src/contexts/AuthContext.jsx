@@ -52,19 +52,23 @@ export const AuthProvider = ({ children }) => {
       let request = await client.post("/login", {
         username: username,
         password: password,
-        
       });
       console.log("login request sent");
+  
       if (request.status === httpStatus.OK) {
-        localStorage.setItem("token", request.data.token);
-        console.log(username,"stored")
+        const { token, user } = request.data; 
+  
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        console.log(username, "stored");
         return username;
-        // router("/home");
       }
     } catch (err) {
+      console.error("Error during login:", err);
       throw err;
     }
   };
+  
 
   const router = useNavigate();
 

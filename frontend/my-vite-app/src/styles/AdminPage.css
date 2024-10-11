@@ -1,0 +1,134 @@
+.admin {
+  min-height: 80vh;
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* input[type="text"] {
+  margin: 20px 0;
+  padding: 8px;
+  width: 300px;
+} */
+
+/* Modal Background (over table only) */
+.modal-overlay {
+  position: absolute;
+  height: auto;
+  background-color: rgba(0, 0, 0, 0.84);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  left: 50%;
+  margin: 0 auto;
+}
+
+/* Modal Container */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  z-index: 1001;
+  top: 20%;
+  left: 30%;
+  margin: 0 auto;
+
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Input Field Styling */
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: black;
+  font-size: 28px;
+  border-radius: 50%;
+  padding: 5px 10px;
+}
+
+.modal-close:hover {
+  background-color: rgba(255, 0, 0, 0.163);
+}
+
+.admin-heading {
+  font-size: 2em;
+  color: #4a4a4a;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px 0;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: "Arial", sans-serif;
+}
+
+@media (max-width: 768px) {
+  .admin-heading {
+    font-size: 1.5em;
+  }
+
+  .admin {
+    height: 80vh;
+    width: 100%;
+  }
+
+  th,
+  td {
+    padding: 6px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .modal-overlay {
+    left: 0;
+    top: 0;
+    margin: 0 auto;
+    width: 95%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-content {
+    top: 20%;
+    left: auto;
+    width: 95%;
+    margin: 0 auto;
+  }
+}

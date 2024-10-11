@@ -6,10 +6,13 @@ import nodemailer from "nodemailer";
 import { User } from "../models/user.model.js";
 import httpStatus from "http-status";
 import bcrypt, { hash } from "bcrypt";
+import jwt from 'jsonwebtoken'
 
 import { Meeting } from "../models/meeting.model.js";
 
 import crypto from "crypto";
+
+const jwt_secret = process.env.JWT_SECRET;
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -22,17 +25,21 @@ const login = async (req, res) => {
     if (!user) {
       return res
         .status(httpStatus.NOT_FOUND)
-        .json({ message: "User Not FOund" });
+        .json({ message: "User Not Found" });
     }
 
     let isPasswordRight = await bcrypt.compare(password, user.password);
 
     if (isPasswordRight) {
-      let token = crypto.randomBytes(20).toString("hex");
-
-      user.token = token;
-      await user.save();
-      return res.status(httpStatus.OK).json({ token: token });
+      const token = jwt.sign(
+        { id: user._id, isAdmin: user.isAdmin },
+        jwt_secret,
+        { expiresIn: '1h' }
+      );
+      return res.status(httpStatus.OK).json({ 
+        token: token, 
+        user: { id: user._id, isAdmin: user.isAdmin, username: user.username }
+      });
     } else {
       return res
         .status(httpStatus.UNAUTHORIZED)
@@ -75,15 +82,15 @@ const register = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
-        user: "apnavideo6633@gmail.com",
-        pass: "ewjlkbewmjaygcds",
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
     
     const mailOptions = {
       to: email,
-      from: "apnavideo@gmail.com",
+      from: process.env.EMAIL_USER,
       subject: "Thank You for Registering!",
       text: `Welcome ${name}, \n\nThank you for joining APNA VIDEO! We’re thrilled to have you on board. Your decision to be a part of our community means a lot to us, and we are committed to providing you with the best experience possible. Whether you're here to explore, learn, or connect, we're excited to accompany you on this journey. If you ever have questions or need assistance, don't hesitate to reach out. Welcome to the APNA VIDEO family, and let’s make great things happen together! \n\n Best Regards \n Apna Video team `,
     };

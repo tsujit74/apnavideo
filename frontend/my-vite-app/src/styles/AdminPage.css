@@ -1,8 +1,6 @@
 .admin {
   min-height: 80vh;
   padding: 10px;
-  overflow-y: auto;
-  white-space: nowrap;
 }
 
 table {

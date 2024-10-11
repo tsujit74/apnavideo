@@ -1,6 +1,8 @@
 .admin {
   min-height: 80vh;
   padding: 10px;
+  overflow-y: auto;
+  white-space: nowrap;
 }
 
 table {
@@ -88,16 +90,21 @@ th {
   color: #4a4a4a;
   font-weight: bold;
   text-align: center;
-  margin: 20px 0;
+  margin: 10px 0;
   border-bottom: 2px solid #007bff;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-family: "Arial", sans-serif;
 }
 
+table::-webkit-scrollbar {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .admin-heading {
+    margin-top: 3px;
     font-size: 1.5em;
   }
 
@@ -112,9 +119,12 @@ th {
   }
 
   table {
-    display: block;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    height: 60vh;
     overflow-x: auto;
-    white-space: nowrap;
+      white-space: nowrap;
   }
   .modal-overlay {
     left: 0;

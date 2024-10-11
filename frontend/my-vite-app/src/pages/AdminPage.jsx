@@ -5,6 +5,7 @@ import { useSnackbar } from "notistack";
 import CircularProgress from "@mui/material/CircularProgress";
 import "../styles/AdminPage.css";
 import withAuth from "../utils/withAuth";
+import BackButton from "./BackButton";
 
 const AdminPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -114,6 +115,7 @@ const AdminPage = () => {
 
   return (
     <div className="admin">
+      <BackButton/>
       <h1 className="admin-heading">Admin Dashboard</h1>
 
       <h3>User Management</h3>

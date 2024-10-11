@@ -1,12 +1,15 @@
 .admin {
-  min-height: 80vh;
+  height: 80vh;
   padding: 10px;
+  overflow-y: auto;
+  white-space: nowrap;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
+  height: 60vh;
   overflow-x: auto;
     white-space: nowrap;
 }
@@ -119,9 +122,9 @@ table::-webkit-scrollbar {
   }
 
   table {
-    width: 100%;
+    display: block;
     overflow-x: auto;
-      white-space: nowrap;
+    white-space: nowrap;
   }
   .modal-overlay {
     left: 0;

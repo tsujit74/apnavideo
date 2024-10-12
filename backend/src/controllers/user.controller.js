@@ -32,13 +32,13 @@ const login = async (req, res) => {
 
     if (isPasswordRight) {
       const token = jwt.sign(
-        { id: user._id, isAdmin: user.isAdmin },
+        { id: user._id, isAdmin: user.isAdmin, name:user.name },
         jwt_secret,
         { expiresIn: "1h" }
       );
       return res.status(httpStatus.OK).json({
         token: token,
-        user: { id: user._id, isAdmin: user.isAdmin, username: user.username },
+        user: { id: user._id, isAdmin: user.isAdmin, username: user.username,name:user.name },
       });
     } else {
       return res

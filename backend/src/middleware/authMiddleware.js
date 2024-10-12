@@ -19,6 +19,7 @@ const authenticate = (req, res, next) => {
     }
 
     req.userId = decoded.id;
+    req.name = decoded.name;
     req.isAdmin = decoded.isAdmin;
     
     if (!req.isAdmin) {

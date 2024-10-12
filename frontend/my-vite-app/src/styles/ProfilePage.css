@@ -82,6 +82,10 @@
   border-bottom: 2px solid #121010;
 }
 
+.headDetails h3{
+  color:#ff9839;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .profile-container {

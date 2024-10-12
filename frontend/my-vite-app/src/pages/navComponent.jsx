@@ -19,6 +19,7 @@ export default function NavComponent() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    localStorage.removeItem('user');
 
     const token = localStorage.getItem("token");
     const storedUsername = localStorage.getItem("username");

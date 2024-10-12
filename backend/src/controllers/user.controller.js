@@ -6,7 +6,7 @@ import nodemailer from "nodemailer";
 import { User } from "../models/user.model.js";
 import httpStatus from "http-status";
 import bcrypt, { hash } from "bcrypt";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
 import { Meeting } from "../models/meeting.model.js";
 
@@ -34,11 +34,11 @@ const login = async (req, res) => {
       const token = jwt.sign(
         { id: user._id, isAdmin: user.isAdmin },
         jwt_secret,
-        { expiresIn: '1h' }
+        { expiresIn: "1h" }
       );
-      return res.status(httpStatus.OK).json({ 
-        token: token, 
-        user: { id: user._id, isAdmin: user.isAdmin, username: user.username }
+      return res.status(httpStatus.OK).json({
+        token: token,
+        user: { id: user._id, isAdmin: user.isAdmin, username: user.username },
       });
     } else {
       return res
@@ -87,7 +87,6 @@ const register = async (req, res) => {
       },
     });
 
-    
     const mailOptions = {
       to: email,
       from: process.env.EMAIL_USER,
@@ -235,16 +234,16 @@ const forgetPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(httpStatus.NOT_FOUND).json({ message: "User Not Found" });
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: "User Not Found" });
     }
 
-    
     const code = crypto.randomBytes(3).toString("hex");
     user.resetCode = code;
-    user.resetCodeExpires = Date.now() + 3600000; 
+    user.resetCodeExpires = Date.now() + 3600000;
     await user.save();
 
-    
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -261,7 +260,11 @@ const forgetPassword = async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(httpStatus.OK).json({ message: `Password Reset Code Sent to Your Email ${user.email}` });
+    res
+      .status(httpStatus.OK)
+      .json({
+        message: `Password Reset Code Sent to Your Email ${user.email}`,
+      });
   } catch (err) {
     console.error("Error sending email:", err);
     res.status(httpStatus.BAD_REQUEST).json({ message: "Error Sending Email" });
@@ -273,7 +276,9 @@ const resetPassword = async (req, res) => {
     const { email, code, password } = req.body;
 
     if (!email || !code || !password) {
-      return res.status(httpStatus.BAD_REQUEST).json({ message: "Email, Code, and New Password are required." });
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ message: "Email, Code, and New Password are required." });
     }
 
     const user = await User.findOne({
@@ -283,23 +288,53 @@ const resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(httpStatus.NOT_FOUND).json({ message: "Password Reset Code is invalid or has expired" });
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: "Password Reset Code is invalid or has expired" });
     }
 
     if (password.length < 6) {
-      return res.status(httpStatus.LENGTH_REQUIRED).json({ message: "Password must be at least 6 characters long." });
+      return res
+        .status(httpStatus.LENGTH_REQUIRED)
+        .json({ message: "Password must be at least 6 characters long." });
     }
 
     user.password = await bcrypt.hash(password, 10);
-    user.resetCode = undefined; 
+    user.resetCode = undefined;
     user.resetCodeExpires = undefined;
 
     await user.save();
     res.status(httpStatus.OK).json({ message: "Password Updated!" });
   } catch (error) {
-    console.error("Error resetting password:", error); 
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Could not update password." });
+    console.error("Error resetting password:", error);
+    res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Could not update password." });
   }
 };
 
-export { login, register, getUserHistory, addToHistory, sendMessage,forgetPassword,resetPassword };
+const getUserEmail = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findById(userId);
+    if (user) {
+      res.json({ email: user.email });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export {
+  login,
+  register,
+  getUserHistory,
+  addToHistory,
+  sendMessage,
+  forgetPassword,
+  resetPassword,
+  getUserEmail,
+};

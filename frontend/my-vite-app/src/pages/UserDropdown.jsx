@@ -43,6 +43,7 @@ const UserDropdown = ({ username }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    localStorage.removeItem("user");
     
     setUser(null);
     enqueueSnackbar("Successfully logged out.", {
@@ -54,10 +55,10 @@ const UserDropdown = ({ username }) => {
   };
   
 
-  const outService=() =>{
-    enqueueSnackbar("This feature is under development!",{variant:'info',anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000});
-    handleClose();
-  }
+  // const outService=() =>{
+  //   enqueueSnackbar("This feature is under development!",{variant:'info',anchorOrigin:{vertical:'top',horizontal:'center'},autoHideDuration:2000});
+  //   handleClose();
+  // }
 
   const avatarContent = username ? username.charAt(0).toUpperCase() : "";
 
@@ -102,8 +103,8 @@ const UserDropdown = ({ username }) => {
           <Link to={"/home"} style={{textDecoration:'none',color:'black'}}>{username}</Link>
           
         </MenuItem>
-        <MenuItem onClick={outService}>Profile</MenuItem>
-        <MenuItem onClick={outService}>Settings</MenuItem>
+        <MenuItem onClick={handleClose}><Link to={"/profile"} style={{textDecoration:'none',color:'black'}}>Profile</Link></MenuItem>
+        {/* <MenuItem onClick={outService}>Settings</MenuItem> */}
         <MenuItem onClick={handleClose}><Link to={"/contact-page"} style={{textDecoration:'none',color:'black'}}> Contact Us</Link></MenuItem>
         {isAdmin && (
           <MenuItem onClick={handleClose}>

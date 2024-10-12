@@ -1,0 +1,117 @@
+.notUser {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 12px;
+  height: 70vh;
+}
+
+.profile-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 12px;
+  height: 80vh;
+}
+
+.profile-section {
+  background-color: #e6e2e2ac;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.profile-section h2 {
+  margin-bottom: 15px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #333;
+  padding-bottom: 10px;
+}
+
+.profile-section p {
+  margin: 10px 0;
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.profile-section p strong {
+  font-weight: 600;
+  color: #222;
+}
+
+/* Highlight Admin Status */
+.profile-section p.admin-yes {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.profile-section p.admin-no {
+  color: #f44336;
+  font-weight: bold;
+}
+
+/* Profile Action Styles */
+
+.profile-action {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
+}
+
+.profile-action .link {
+  text-decoration: none;
+}
+
+.profile-action .link {
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  text-transform: none;
+  transition: background-color 0.3s ease;
+}
+
+.headDetails {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #121010;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 15px;
+  }
+  .profile-section {
+    padding: 15px;
+  }
+  .profile-section h2 {
+    font-size: 1.4rem;
+  }
+  .profile-section p {
+    font-size: 1rem;
+  }
+
+  .profile-action {
+    display: block;
+    gap: 10px;
+  }
+
+  .profile-action .link {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-action .link {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+}

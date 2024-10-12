@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addToHistory, getUserHistory, login, register, sendMessage,forgetPassword,resetPassword } from "../controllers/user.controller.js";
+import { addToHistory, getUserHistory, login, register, sendMessage,forgetPassword,resetPassword,getUserEmail } from "../controllers/user.controller.js";
 
 
 const router  = Router();
@@ -11,5 +11,6 @@ router.route("/get_all_activity").get(getUserHistory)
 router.route("/sendMessage").post(sendMessage)
 router.route("/forgetPassword").post(forgetPassword)
 router.route("/resetPassword").post(resetPassword)
+router.route("/getUserEmail/:id").get(getUserEmail)
 
 export default router;
